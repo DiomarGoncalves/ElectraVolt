@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lokar Veículos | Catálogo</title>
+    <title>ElectraVolt | Catálogo de Conversores</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
@@ -25,18 +25,18 @@
       }
     </style>
   </head>
-  <body class="bg-gradient-to-br from-gray-900 via-neutral-800 to-black text-white min-h-screen">
+  <body class="bg-gradient-to-br from-red-900 via-black to-red-800 text-white min-h-screen">
 
     <!-- Cabeçalho -->
 <header class="bg-black/80 backdrop-blur-md shadow-lg sticky top-0 z-50">
   <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
     <div class="flex items-center gap-4">
       <a href="login.html">
-        <img src="/uploads/logo.png" alt="Logo Lokar" class="w-16 h-16 rounded-full border border-gray-300 shadow-md object-cover" />
+        <img src="/uploads/logo.png" alt="Logo ElectraVolt" class="w-16 h-16 rounded-full border border-gray-300 shadow-md object-cover" />
       </a>
       <div>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-wider text-white">Lokar Veículos</h1>
-        <p class="text-sm text-gray-400">Catálogo Premium de Automóveis</p>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-wider text-white">ElectraVolt</h1>
+        <p class="text-sm text-gray-400">Conversores de Tensão de Alta Qualidade</p>
       </div>
     </div>
   </div>
@@ -45,33 +45,33 @@
 
     <!-- Título, Filtro e Ordenação -->
     <section class="text-center py-10 px-4">
-      <h2 class="text-4xl font-bold text-white mb-4">Catálogo de Veículos</h2>
+      <h2 class="text-4xl font-bold text-white mb-4">Catálogo de Conversores</h2>
       <p class="text-gray-400 mb-6">Filtre por modelo ou marca</p>
       <input
         type="text"
         id="filtroInput"
         placeholder="Digite para filtrar..."
-        class="w-full max-w-md mx-auto px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        class="w-full max-w-md mx-auto px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
       />
 
       <div class="flex flex-col sm:flex-row justify-center gap-4 mt-6">
         <select
           id="ordenarSelect"
-          class="px-4 py-2 rounded-lg bg-black text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-500 transition"
+          class="px-4 py-2 rounded-lg bg-black text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-red-500 transition"
         >
           <option value="default">Ordenar por</option>
           <option value="preco">Preço (menor para maior)</option>
-          <option value="ano">Ano (mais recente)</option>
+          <option value="modelo">Modelo (A-Z)</option>
         </select>
       </div>
     </section>
 
-    <!-- Cards de Veículos -->
+    <!-- Cards de Produtos -->
     <main class="max-w-7xl mx-auto px-4 pb-24">
-      <div id="vehicleCards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div id="productCards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         <!-- Cards via JavaScript -->
       </div>
-      <div id="vehicleTable" class="hidden">
+      <div id="productTable" class="hidden">
         <!-- Tabela administrativa será renderizada aqui -->
       </div>
     </main>
@@ -89,7 +89,7 @@
 
     <!-- Rodapé -->
     <footer class="bg-black/90 text-gray-400 text-center py-6 border-t border-gray-700">
-      <p>&copy; 2025 Lokar Veículos. Todos os direitos reservados.</p>
+      <p>&copy; 2025 ElectraVolt. Todos os direitos reservados.</p>
     </footer>
 
     <!-- Script -->
