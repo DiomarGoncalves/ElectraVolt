@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lokar Veículos | Catálogo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-gray-900 via-neutral-800 to-black text-white min-h-screen">
+
+    <!-- Cabeçalho -->
+<header class="bg-black/80 backdrop-blur-md shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-4">
+      <a href="login.html">
+        <img src="/uploads/logo.png" alt="Logo Lokar" class="w-16 h-16 rounded-full border border-gray-300 shadow-md object-cover" />
+      </a>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-wider text-white">Lokar Veículos</h1>
+        <p class="text-sm text-gray-400">Catálogo Premium de Automóveis</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+    <!-- Título, Filtro e Ordenação -->
+    <section class="text-center py-10 px-4">
+      <h2 class="text-4xl font-bold text-white mb-4">Catálogo de Veículos</h2>
+      <p class="text-gray-400 mb-6">Filtre por modelo ou marca</p>
+      <input
+        type="text"
+        id="filtroInput"
+        placeholder="Digite para filtrar..."
+        class="w-full max-w-md mx-auto px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+      />
+
+      <div class="flex flex-col sm:flex-row justify-center gap-4 mt-6">
+        <select
+          id="ordenarSelect"
+          class="px-4 py-2 rounded-lg bg-black text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-500 transition"
+        >
+          <option value="default">Ordenar por</option>
+          <option value="preco">Preço (menor para maior)</option>
+          <option value="ano">Ano (mais recente)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Cards de Veículos -->
+    <main class="max-w-7xl mx-auto px-4 pb-24">
+      <div id="vehicleCards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <!-- Cards via JavaScript -->
+      </div>
+      <div id="vehicleTable" class="hidden">
+        <!-- Tabela administrativa será renderizada aqui -->
+      </div>
+    </main>
+
+    <!-- Modal Detalhes -->
+    <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+      <div class="bg-neutral-900 text-white rounded-xl w-full max-w-xl shadow-lg p-6 relative">
+        <button id="fecharModal" class="absolute top-2 right-2 text-gray-400 hover:text-white text-2xl">&times;</button>
+        <img id="modalImagem" class="w-full h-64 object-cover rounded-lg mb-4" />
+        <h3 id="modalModelo" class="text-2xl font-bold mb-2"></h3>
+        <p id="modalDescricao" class="text-gray-300 mb-2"></p>
+        <p id="modalPreco" class="text-amber-400 font-semibold text-lg"></p>
+      </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-black/90 text-gray-400 text-center py-6 border-t border-gray-700">
+      <p>&copy; 2025 Lokar Veículos. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Script -->
+    <script src="/script.js"></script>
+  </body>
+</html>
