@@ -75,7 +75,9 @@ app.post("/api/login", async (req, res) => {
 // Rota para listar produtos
 app.get("/api/produtos", async (req, res) => {
   try {
+    console.log("Iniciando busca de produtos...");
     const result = await pool.query("SELECT * FROM produtos ORDER BY id ASC");
+    console.log("Produtos encontrados:", result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error("Erro ao buscar produtos:", error);
