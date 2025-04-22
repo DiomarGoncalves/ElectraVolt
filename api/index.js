@@ -5,6 +5,7 @@ import { Pool } from "pg"; // Instale com `npm install pg`
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import multer from "multer";
+import bcrypt from "bcrypt"; // Instale com `npm install bcrypt`
 
 dotenv.config();
 
@@ -46,15 +47,29 @@ const verifyToken = (req, res, next) => {
 };
 
 // Rota para login do administrador
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
-  if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    return res.json({ token });
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username e senha são obrigatórios" });
   }
 
-  res.status(401).json({ error: "Credenciais inválidas" });
+  try {
+    const result = await pool.query("SELECT * FROM usuarios WHERE username = $1", [username]);
+    const user = result.rows[0];
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: "Credenciais inválidas" });
+    }
+
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ token });
+  } catch (error) {
+    console.error("Erro ao autenticar usuário:", error);
+    res.status(500).json({ error: "Erro ao autenticar usuário" });
+  }
 });
 
 // Rota para listar produtos
@@ -101,6 +116,44 @@ app.delete("/api/produtos/:id", async (req, res) => {
 // Rota protegida para administração
 app.use("/api/admin", verifyToken, (req, res) => {
   res.json({ message: "Bem-vindo à área administrativa!" });
+});
+
+// Rota para criar um novo usuário (apenas para fins administrativos)
+app.post("/api/usuarios", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username e senha são obrigatórios" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10); // Criptografar a senha
+    const result = await pool.query(
+      "INSERT INTO usuarios (username, password) VALUES ($1, $2) RETURNING id, username",
+      [username, hashedPassword]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erro ao criar usuário:", error);
+    if (error.code === "23505") {
+      res.status(400).json({ error: "Usuário já existe" });
+    } else {
+      res.status(500).json({ error: "Erro ao criar usuário" });
+    }
+  }
+});
+
+// Rota para listar usuários (apenas para depuração ou administração)
+app.get("/api/usuarios", async (req, res) => {
+  try {
+    console.log("Iniciando busca de usuários...");
+    const result = await pool.query("SELECT id, username FROM usuarios");
+    console.log("Usuários encontrados:", result.rows);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    res.status(500).json({ error: "Erro ao buscar usuários" });
+  }
 });
 
 // Middleware para lidar com rotas inexistentes
