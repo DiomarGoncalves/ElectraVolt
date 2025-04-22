@@ -1,30 +1,32 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import jwt from "jsonwebtoken"; // Instale com `npm install jsonwebtoken`
+import { Pool } from "pg"; // Instale com `npm install pg`
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import multer from "multer";
 
-dotenv.config(); // Carregar variáveis de ambiente do arquivo .env
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001; // Alterar para 3001 ou outra porta disponível
+
+// Configuração do banco de dados PostgreSQL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public")); // Certifique-se de que a pasta "public" está no mesmo nível do arquivo index.js
 
-// Middleware para servir a pasta de uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Caminho do "banco de dados"
-const veiculosPath = path.resolve(__dirname, "../data/veiculos.json");
+// Configuração do multer para upload de imagens
+const upload = multer({
+  dest: "uploads/",
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
+});
 
 // Middleware para verificar o token JWT
 const verifyToken = (req, res, next) => {
@@ -47,95 +49,58 @@ const verifyToken = (req, res, next) => {
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
-  console.log("Tentativa de login:", username); // Log para depuração
-
-  // Verificar credenciais (substitua por uma lógica mais robusta se necessário)
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    console.log("Login bem-sucedido para:", username); // Log para depuração
-    // Gerar token JWT
     const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "1h" });
     return res.json({ token });
   }
 
-  console.error("Credenciais inválidas para:", username); // Log para depuração
   res.status(401).json({ error: "Credenciais inválidas" });
+});
+
+// Rota para listar produtos
+app.get("/api/produtos", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM produtos ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Erro ao buscar produtos:", error);
+    res.status(500).json({ error: "Erro ao buscar produtos" });
+  }
+});
+
+// Rota para adicionar produto
+app.post("/api/produtos", upload.single("image"), async (req, res) => {
+  const { name, model, price } = req.body;
+  const image = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO produtos (name, model, price, image) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, model, price, image]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erro ao adicionar produto:", error);
+    res.status(500).json({ error: "Erro ao adicionar produto" });
+  }
+});
+
+// Rota para excluir produto
+app.delete("/api/produtos/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query("DELETE FROM produtos WHERE id = $1", [id]);
+    res.status(200).json({ message: "Produto excluído com sucesso" });
+  } catch (error) {
+    console.error("Erro ao excluir produto:", error);
+    res.status(500).json({ error: "Erro ao excluir produto" });
+  }
 });
 
 // Rota protegida para administração
 app.use("/api/admin", verifyToken, (req, res) => {
   res.json({ message: "Bem-vindo à área administrativa!" });
-});
-
-// Rota para listar veículos
-app.get("/api/veiculos", (req, res) => {
-  console.log("Recebida requisição GET em /api/veiculos");
-
-  if (!fs.existsSync(veiculosPath)) {
-    console.warn("Arquivo veiculos.json não encontrado. Criando um novo arquivo...");
-    fs.writeFileSync(veiculosPath, JSON.stringify([], null, 2), "utf8");
-  }
-
-  fs.readFile(veiculosPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Erro ao ler o arquivo veiculos.json:", err);
-      return res.status(500).json({ error: "Erro ao ler os dados do servidor" });
-    }
-    try {
-      const veiculos = JSON.parse(data);
-      console.log("Veículos carregados com sucesso:", veiculos);
-      res.json(veiculos);
-    } catch (parseError) {
-      console.error("Erro ao parsear o arquivo veiculos.json:", parseError);
-      res.status(500).json({ error: "Erro ao processar os dados do servidor" });
-    }
-  });
-});
-
-// Rota para adicionar veículo
-app.post("/api/veiculos", (req, res) => {
-  const novoVeiculo = req.body;
-
-  fs.readFile(veiculosPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Erro ao ler o arquivo veiculos.json:", err);
-      return res.status(500).json({ error: "Erro ao ler os dados" });
-    }
-
-    const veiculos = JSON.parse(data);
-    novoVeiculo.id = veiculos.length + 1;
-    veiculos.push(novoVeiculo);
-
-    fs.writeFile(veiculosPath, JSON.stringify(veiculos, null, 2), (err) => {
-      if (err) {
-        console.error("Erro ao salvar o arquivo veiculos.json:", err);
-        return res.status(500).json({ error: "Erro ao salvar os dados" });
-      }
-      res.status(201).json(novoVeiculo);
-    });
-  });
-});
-
-// Rota para excluir veículo
-app.delete("/api/veiculos/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-
-  fs.readFile(veiculosPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Erro ao ler o arquivo veiculos.json:", err);
-      return res.status(500).json({ error: "Erro ao ler os dados" });
-    }
-
-    let veiculos = JSON.parse(data);
-    veiculos = veiculos.filter((veiculo) => veiculo.id !== id);
-
-    fs.writeFile(veiculosPath, JSON.stringify(veiculos, null, 2), (err) => {
-      if (err) {
-        console.error("Erro ao salvar o arquivo veiculos.json:", err);
-        return res.status(500).json({ error: "Erro ao salvar os dados" });
-      }
-      res.status(200).json({ message: "Veículo excluído com sucesso" });
-    });
-  });
 });
 
 // Middleware para lidar com rotas inexistentes
@@ -146,4 +111,10 @@ app.use((req, res) => {
 // Iniciar o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
+}).on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Erro: A porta ${PORT} já está em uso.`);
+  } else {
+    console.error(err);
+  }
 });

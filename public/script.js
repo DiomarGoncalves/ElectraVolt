@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let listaProdutos = [];
 
-  const API_URL = "/api/produtos"; // Caminho relativo para funcionar na Vercel
+  const API_URL = "/api/produtos"; // Certifique-se de que a URL está correta
 
   // Função para renderizar os cards
   function renderCards(lista) {

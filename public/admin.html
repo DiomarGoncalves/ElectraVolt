@@ -35,38 +35,39 @@
     <!-- Formulário de Adição -->
     <main class="max-w-4xl mx-auto px-4 py-10">
       <section class="bg-neutral-900 p-6 rounded-2xl shadow-xl border border-neutral-700">
-        <h2 class="text-xl font-semibold mb-4">Adicionar Novo Veículo</h2>
-        <form id="addVehicleForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input type="text" id="name" placeholder="Nome do veículo" required
+        <h2 class="text-xl font-semibold mb-4">Adicionar Novo Produto</h2>
+        <form id="addProductForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4" enctype="multipart/form-data">
+          <input type="text" id="name" name="name" placeholder="Nome do produto" required
             class="px-4 py-2 rounded-md bg-black border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          <input type="number" id="year" placeholder="Ano" required
+          <input type="text" id="model" name="model" placeholder="Modelo" required
             class="px-4 py-2 rounded-md bg-black border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          <input type="text" id="price" placeholder="Preço" required
+          <input type="text" id="price" name="price" placeholder="Preço" required
             class="px-4 py-2 rounded-md bg-black border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          <input type="text" id="image" placeholder="URL da imagem" required
-            class="px-4 py-2 rounded-md bg-black border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          <input type="file" id="image" name="image" accept="image/*" required
+            class="px-4 py-2 rounded-md bg-black border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-amber-500" />
 
           <div class="sm:col-span-2">
             <button type="submit"
               class="w-full bg-amber-500 hover:bg-amber-600 transition text-black font-semibold py-2 rounded-md shadow">
-              Adicionar Veículo
+              Adicionar Produto
             </button>
           </div>
         </form>
       </section>
 
-      <!-- Tabela de veículos -->
+      <!-- Tabela de produtos -->
       <section class="mt-10">
-        <h2 class="text-xl font-semibold mb-4">Veículos Cadastrados</h2>
-        <div id="vehicleTable" class="overflow-x-auto bg-neutral-900 border border-neutral-700 rounded-xl p-4">
+        <h2 class="text-xl font-semibold mb-4">Produtos Cadastrados</h2>
+        <div id="productTable" class="overflow-x-auto bg-neutral-900 border border-neutral-700 rounded-xl p-4">
           <!-- Conteúdo dinâmico via JavaScript -->
         </div>
       </section>
     </main>
 
-    <footer class="text-center py-6 text-gray-500 text-sm">
-      &copy; 2025 ElectraVolt - Administração
+    <footer class="bg-black/90 text-gray-400 text-center py-6 border-t border-gray-700" style="position: fixed;bottom: 0px;width: 100vw;">
+      <p>&copy; 2025 ElectraVolt. Todos os direitos reservados.</p>
     </footer>
+
 
     <script src="admin.js"></script>
   </body>
