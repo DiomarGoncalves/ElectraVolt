@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { Fornecedor, MateriaPrima, PrecoFornecedor, Produto } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// Detecta ambiente: se rodando em Vercel/produção, usa caminho relativo
+const API_BASE_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:3001/api'
+    : '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
