@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
     `);
     res.json(result.rows);
   } catch (error) {
-    console.error('Erro ao buscar matérias-primas:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao buscar matérias-primas:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   }
 });
 

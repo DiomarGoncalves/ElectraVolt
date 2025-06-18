@@ -35,8 +35,8 @@ router.get('/', async (req, res) => {
     
     res.json(produtos);
   } catch (error) {
-    console.error('Erro ao buscar produtos:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao buscar produtos:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   }
 });
 
@@ -72,8 +72,8 @@ router.get('/:id', async (req, res) => {
     
     res.json(produto);
   } catch (error) {
-    console.error('Erro ao buscar produto:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao buscar produto:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   }
 });
 
@@ -130,8 +130,8 @@ router.post('/', async (req, res) => {
     res.status(201).json(produtoCompleto.rows[0]);
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Erro ao criar produto:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao criar produto:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   } finally {
     client.release();
   }
@@ -174,8 +174,8 @@ router.put('/:id', async (req, res) => {
     res.json(produtoResult.rows[0]);
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Erro ao atualizar produto:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao atualizar produto:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   } finally {
     client.release();
   }
@@ -194,8 +194,8 @@ router.delete('/:id', async (req, res) => {
     
     res.json({ message: 'Produto excluído com sucesso' });
   } catch (error) {
-    console.error('Erro ao excluir produto:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao excluir produto:', error, error.stack);
+    res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   }
 });
 
