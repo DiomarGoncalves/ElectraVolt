@@ -1,0 +1,45 @@
+CREATE TABLE IF NOT EXISTS fornecedores (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  cnpj VARCHAR(32) NOT NULL UNIQUE,
+  telefone VARCHAR(32),
+  email VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS materias_primas (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  unidade VARCHAR(16) NOT NULL,
+  estoque NUMERIC DEFAULT 0,
+  descricao TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS precos_fornecedores (
+  id SERIAL PRIMARY KEY,
+  fornecedor_id INTEGER REFERENCES fornecedores(id) ON DELETE CASCADE,
+  materia_id INTEGER REFERENCES materias_primas(id) ON DELETE CASCADE,
+  preco NUMERIC NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (fornecedor_id, materia_id)
+);
+
+CREATE TABLE IF NOT EXISTS produtos (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  preco_venda NUMERIC NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS composicao_produtos (
+  id SERIAL PRIMARY KEY,
+  produto_id INTEGER REFERENCES produtos(id) ON DELETE CASCADE,
+  materia_id INTEGER REFERENCES materias_primas(id),
+  fornecedor_id INTEGER REFERENCES fornecedores(id),
+  quantidade NUMERIC NOT NULL
+);
