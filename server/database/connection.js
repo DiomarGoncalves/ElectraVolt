@@ -5,8 +5,10 @@ dotenv.config();
 
 const { Pool } = pg;
 
+const DEFAULT_CONNECTION_STRING = 'postgresql://postgres:Diomar1205@db.wchacqfpdhstnsrsblaz.supabase.co:5432/postgres';
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL || DEFAULT_CONNECTION_STRING,
   ssl: {
     rejectUnauthorized: false
   }
