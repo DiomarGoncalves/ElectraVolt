@@ -70,10 +70,10 @@ app.use('*', (req, res) => {
 });
 
 // Remova ou comente o bloco abaixo:
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📊 API disponível em: http://localhost:${PORT}/api`);
-  console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
-});
+// app.listen(PORT, () => {
+//   console.log(`🚀 Servidor rodando na porta ${PORT}`);
+//   console.log(`📊 API disponível em: http://localhost:${PORT}/api`);
+//   console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
+// });
 
 export default app;
