@@ -20,7 +20,7 @@ pool.on('connect', () => {
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Errro na conexão com o banco:', err);
+  console.error('❌ Erro na conexão com o banco:', err);
 });
 
 export default pool;
