@@ -5,7 +5,7 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const DEFAULT_CONNECTION_STRING = 'postgresql://postgres:Diomar1205@db.wchacqfpdhstnsrsblaz.supabase.co:5432/postgres';
+const DEFAULT_CONNECTION_STRING = 'postgresql://ElectraVolts_owner:npg_melhP5KXgRo6@ep-odd-bird-a4hern8o-pooler.us-east-1.aws.neon.tech/ElectraVolts?sslmode=require';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || DEFAULT_CONNECTION_STRING,
